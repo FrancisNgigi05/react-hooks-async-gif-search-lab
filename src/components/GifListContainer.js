@@ -4,11 +4,11 @@ import GifSearch from "./GifSearch";
 
 function GifListContainer(){
   const [gifs, setGifs] = useState([]);
-  const [query, setQuery] = useState("puppies");
+  const [query, setQuery] = useState("cows");
 
   useEffect(() => {
     fetch(
-      `https://api.giphy.com/v1/gifs/search?q=${query}&api_key=5pJEGyeqsRWHZkCu5Us41hutYUw2tQom&limit=5`
+      `https://api.giphy.com/v1/gifs/search?q=${query}&api_key=5pJEGyeqsRWHZkCu5Us41hutYUw2tQom&limit=7`
     )
       .then((r) => r.json())
       .then(({ data }) => {
