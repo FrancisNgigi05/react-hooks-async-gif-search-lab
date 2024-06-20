@@ -1,21 +1,23 @@
-import React from "react";
+import React from 'react'
 
-function GifList({gifs}) {
-    const gif = gifs.map((gif) => {
+function GifList( {giphs} ) {
+//   {giphs.map((giph) => (
+//         <img key={giph.id} src={giph.images.fixed_height.url} alt={giph.title} />
+//       ))}
+
+    const giphsDisplayed = giphs.map((giph) => {
         return (
-            <li key={gif.url}>
-                <img src={gif.url} alt="gif" />
+            <li>
+                <img key={giph.id} src={giph.images.fixed_height.url} alt={giph.title} />
             </li>
         )
     })
 
-    return(
-        <div>
-            <ul>
-                {gif}
-            </ul>
-        </div>
+    return (
+        <ul>
+            {giphsDisplayed}
+        </ul>
     )
 }
 
-export default GifList;
+export default GifList

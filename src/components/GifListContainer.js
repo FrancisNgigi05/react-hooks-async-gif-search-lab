@@ -1,31 +1,52 @@
-import React, { useEffect, useState } from "react";
-import GifList from "./GifList";
-import GifSearch from "./GifSearch";
+import React, { useEffect, useState } from 'react';
+import GifList from './GifList';
+import GifSearch from './GifSearch';
 
-function GifListContainer(){
-  const [gifs, setGifs] = useState([]);
-  const [query, setQuery] = useState("cows");
+function GifListContainer() {
+  const [giphs, setGiphs] = useState([]);
+  const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const [giphSearch, setGiphSearch] = useState("dogs");
 
-  useEffect(() => {
-    fetch(
-      `https://api.giphy.com/v1/gifs/search?q=${query}&api_key=5pJEGyeqsRWHZkCu5Us41hutYUw2tQom&limit=7`
-    )
-      .then((r) => r.json())
-      .then(({ data }) => {
-        const gifs = data.map((gif) => ({ url: gif.images.original.url }));
-        setGifs(gifs);
+  const fetchGiphs = () => {
+    fetch(`https://api.giphy.com/v1/gifs/search?q=${giphSearch}&api_key=5GAGsjGXyiBNajo2a9Lpi8jWJqoiREkU&limit=3&rating=g`)
+      .then((r) => {
+        if (!r.ok) {
+          if (r.status === 429) {
+            throw new Error("Too Many Requests");
+          }
+          throw new Error("Failed to fetch");
+        }
+        return r.json();
+      })
+      .then((data) => {
+        setGiphs(data.data);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err.message);
+        if (err.message === "Too Many Requests" && retryCount < 3) {
+          setTimeout(() => {
+            setRetryCount(retryCount + 1);
+            fetchGiphs();
+          }, 3000); // Retry after 3 seconds
+        }
       });
-  }, [query]);
+  };
 
+  // Fetching the data to be stored
+  useEffect(() => {
+    fetchGiphs();
+  }, [giphSearch]);
 
-
-     return(
-         <div style={{ display: "flex" }}>
-             <GifList gifs={gifs} />
-             <GifSearch onSubmit={setQuery} />
-            
-         </div>
-     )
+  
+  return (
+    <div>
+      {error ? <p>Error: {error}</p> : null}
+      <GifSearch giphSearch={giphSearch} setGiphSearch={setGiphSearch}/>
+      <GifList giphs={giphs}/>
+    </div>
+  );
 }
 
 export default GifListContainer;
